@@ -1,0 +1,27 @@
+{
+    "TableName": "permanent-table",
+    "KeySchema": [
+        {
+            "AttributeName": "hash_key",
+            "KeyType": "HASH"
+        },
+        {
+            "AttributeName": "range_key",
+            "KeyType": "RANGE"
+        }
+    ],
+    "AttributeDefinitions": [
+        {
+            "AttributeName": "hash_key",
+            "AttributeType": "S"
+        },
+        {
+            "AttributeName": "range_key",
+            "AttributeType": "S"
+        }
+    ],
+    "ProvisionedThroughput": {
+        "ReadCapacityUnits": 2,
+        "WriteCapacityUnits": 2
+    }
+}

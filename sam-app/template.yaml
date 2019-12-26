@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam sandbox
+
+Parameters:
+  DynamoDbPermanentTableName:
+    Type: String
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Runtime: nodejs8.10
+
+# More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello-world/
+      Runtime: nodejs8.10
+      Timeout: 180
+      Handler: index.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DynamoDbPermanentTableName
+      Policies:
+        - CloudWatchPutMetricPolicy: {}
+        - DynamoDBCrudPolicy:
+          TableName: !Ref DynamoDbPermanentTableName
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "ImplicitHelloWorldFunctionRole IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn

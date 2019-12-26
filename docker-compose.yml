@@ -1,0 +1,31 @@
+version: "3"
+services:
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    env_file: .env
+    ports:
+      - 8000:8000
+  dynamodb-init:
+    build: .
+    env_file: .env
+    command: |
+      /bin/bash -c -euvx "
+        cat PermanentTable.json
+        aws dynamodb create-table \
+          --cli-input-json file://PermanentTable.json \
+          --endpoint-url http://localhost:8000
+        aws dynamodb list-tables \
+          --endpoint-url http://localhost:8000
+      "
+    working_dir: /work
+    volumes:
+      - .:/work
+    depends_on:
+      - dynamodb
+  stepfunctions:
+    image: amazon/aws-stepfunctions-local:latest
+    env_file: .env
+    ports:
+      - 8083:8083
+    depends_on:
+      - dynamodb-init
